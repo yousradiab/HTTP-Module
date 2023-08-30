@@ -14,6 +14,7 @@ const app = http.createServer(async (request, response) => {
 
     const json = await fs.readFile("users.json");
     response.end(json);
+
   } else if (request.url === "/users" && request.method === "POST") {
     const user = {
       id: new Date().getTime(),
@@ -35,12 +36,36 @@ const app = http.createServer(async (request, response) => {
     response.statusCode = 200;
     response.setHeader("Content-Type", "application/json");
     response.end(usersJSON);
+  
+  
   } else if (request.url === "/posts" && request.method === "GET") {
+        response.statusCode = 200;
+        response.setHeader("Content-Type", "application/json");
+
+        const json = await fs.readFile("posts.json");
+        response.end(json);
+
+  } else if (request.url === "/posts" && request.method === "POST") {
+    const post = {
+      id: new Date().getTime(),
+      caption: "Sunflower",
+      credtedAT: 1234567890,
+      image: "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+      uid: 1,
+    };
+    const json = await fs.readFile("./posts.json");
+    console.log(json);
+    const posts = JSON.parse(json);
+    console.log(posts);
+
+    posts.push(post);
+
+    const postJSON = JSON.stringify(posts);
+   
+    await fs.writeFile("./posts.json", postJSON);
     response.statusCode = 200;
     response.setHeader("Content-Type", "application/json");
-
-    const json = await fs.readFile("posts.json");
-    response.end(json);
+       response.end(postJSON);
   }
 });
 
@@ -48,3 +73,4 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Serveren kører på http:/localhost:${port}`);
 });
+
